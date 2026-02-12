@@ -1,20 +1,45 @@
 #include <SPI.h>
 #include <SdFat.h>
-#include <RTCZero.h>
 
 #define SD_CS_PIN 4
 
 SdFat sd;
 File file;
-RTCZero rtc;
+File counterFile;
 
-char filename[40];
+char filename[20];
 unsigned long lastWrite = 0;
-const unsigned long writeInterval = 5000; // 5 seconds
+const unsigned long writeInterval = 5000;
+
+int nextFileNumber() {
+  int num = 0;
+
+  if (sd.exists("counter.txt")) {
+    if (counterFile.open("counter.txt", O_READ)) {
+      counterFile.fgets(filename, sizeof(filename));
+      num = atoi(filename);
+      counterFile.close();
+    }
+  }
+
+  num++;
+
+  if (counterFile.open("counter.txt", O_WRITE | O_TRUNC | O_CREAT)) {
+    counterFile.println(num);
+    counterFile.close();
+  }
+
+  return num;
+}
 
 void setup() {
+  // Small delay
+  delay(500);
+
   // Begin serial
   Serial.begin(115200);
+  unsigned long start = millis();
+  while (!Serial && millis() - start < 3000);
 
   // Init SD card
   Serial.print("Initializing SD... ");
@@ -25,23 +50,8 @@ void setup() {
   }
   Serial.println("Initialized SD");
 
-  // Begin RTC
-  rtc.begin();
-  Serial.println("Initialized RTC");
-  // rtc.setTime(9, 10, 40);
-  // rtc.setDate(12, 2, 2026);
-  // Serial.println("Set RTC time");
-
-
   // Create file
-  sprintf(filename,
-          "data-%04d-%02d-%02dT%02d-%02d-%02d.csv",
-          rtc.getYear() + 2000,
-          rtc.getMonth(),
-          rtc.getDay(),
-          rtc.getHours(),
-          rtc.getMinutes(),
-          rtc.getSeconds());
+  sprintf(filename, "data_%03d.csv", nextFileNumber());
   Serial.print("Creating file: ");
   Serial.println(filename);
 
@@ -61,7 +71,7 @@ void loop() {
     lastWrite = now;
 
     if (file.open(filename, O_WRITE | O_APPEND)) {
-      file.print(getISO8601Timestamp());
+      file.print(now);
       file.print(",");
       file.print("helloworld");
       file.println();
@@ -70,19 +80,4 @@ void loop() {
       Serial.println("Failed to open file");
     }
   }
-}
-
-String getISO8601Timestamp() {
-  char buffer[30];
-
-  sprintf(buffer,
-          "%04d-%02d-%02dT%02d:%02d:%02d",
-          rtc.getYear() + 2000,
-          rtc.getMonth(),
-          rtc.getDay(),
-          rtc.getHours(),
-          rtc.getMinutes(),
-          rtc.getSeconds());
-
-  return String(buffer);
 }
