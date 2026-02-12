@@ -1,28 +1,25 @@
 #include <SPI.h>
-#include <SdFat.h>
+#include <SD.h>
 
-#define SD_CS_PIN A3
-
-SdFat sd;
-File file;
+const int sdPin = 4;
 
 void setup() {
   Serial.begin(115200);
   while (!Serial);
 
-  Serial.print("Initializing SD... ");
-
-  if (!sd.begin(SD_CS_PIN, SD_SCK_MHZ(12))) {
-    Serial.println("FAILED");
-    sd.initErrorPrint(&Serial);
+  Serial.print("Initializing SD...");
+  if (!SD.begin(sdPin)) {
+    Serial.println("SD card init failed");
     while (1);
   }
+  Serial.println("SD initialized");
 
-  Serial.println("SUCCESS");
-
-  file.open("test.txt", O_WRITE | O_CREAT | O_APPEND);
-  file.println("Hello from SdFat!");
-  file.close();
+  File dataFile = SD.open("test.txt", FILE_WRITE);
+  if (dataFile) {
+    dataFile.println("Hello, world!");
+    dataFile.flush();
+    dataFile.close();
+  }
 }
 
 void loop() {}
