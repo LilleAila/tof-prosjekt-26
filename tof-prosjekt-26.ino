@@ -15,7 +15,6 @@ const unsigned long writeInterval = 5000; // 5 seconds
 void setup() {
   // Begin serial
   Serial.begin(115200);
-  while (!Serial);
 
   // Init SD card
   Serial.print("Initializing SD... ");
