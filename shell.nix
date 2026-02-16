@@ -5,5 +5,21 @@ with import <nixpkgs> {};
 
       nixd
       alejandra
+
+      (python3.withPackages (packages:
+        with packages; [
+          matplotlib
+          numpy
+          sympy
+          scipy
+          pandas
+          seaborn
+
+          # python3 -m jupyterlab
+          jupyterlab
+          ipykernel
+          ipywidgets
+          ipython
+        ]))
     ];
   }
