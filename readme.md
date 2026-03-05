@@ -5,5 +5,4 @@ Denne repositoryen inneholder koden og notater tilknyttet prosjektet vårt i fag
 ## Dependencies
 
 - `SdFat` - SD card reading and writing
-- `RTCZero` - Clock module
 - `Adafruit BME280 Library` - Temperature and Humidity

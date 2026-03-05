@@ -10,7 +10,21 @@
 
 #include <I2S.h>
 
-const int sample_duration = 500;
+const int sample_duration = 300;
+
+// Sample rate of approx. 16 kHz
+const int threshold = 50000;
+const float alpha = 0.01;
+const float attack = 0.002;
+const float release = 0.00005;
+const float maxDiff = 10;
+
+float smoothed = 0;
+float envelope = 0;
+int hold = 0;
+const int hold_samples = 1000;
+
+unsigned long lastPrint = 0;
 
 void setup() {
   Serial.begin(115200);
@@ -26,23 +40,33 @@ void setup() {
 }
 
 void loop() {
-  int start = millis();
+  int32_t sample = I2S.read();
 
-  long long sum = 0;
-  int count = 0;
-
-  while (millis() <= start + sample_duration) {
-    int32_t sample = I2S.read();
-
-    if (sample != 0 && sample != -1) {
-      sample >>= 14;
-      sum += abs(sample);
-      count++;
+  if (sample != 0 && sample != -1) {
+    sample >>= 8; // IMNP441 uses 24-bit I2S, arduino reads 32-bit
+    float s = abs(sample);
+    if (s > threshold) {
+      s = threshold;
     }
-  }
+    float target;
+    if (s > envelope) {
+      hold = hold_samples;
+      target = attack * s + (1 - attack) * envelope;
+    }
+    else {
+      if (hold <= 0) target = release * s + (1 - release) * envelope;
+      else target = envelope;
+    };
+    if (target > envelope + maxDiff) envelope += maxDiff;
+    else envelope = target;
 
-  if (count > 0) {
-    float avg = (float)sum / count;
-    Serial.println(avg);
+    smoothed = alpha * envelope + (1 - alpha) * smoothed;
+
+    if (hold > 0) hold--;
+
+    if (millis() - lastPrint > sample_duration) {
+      Serial.println(smoothed);
+      lastPrint = millis();
+    }
   }
 }
