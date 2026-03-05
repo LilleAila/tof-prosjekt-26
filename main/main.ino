@@ -16,6 +16,13 @@
  * SCL -> 12 / SCL
 * */
 
+/*
+ * TEMT6000 pin connections:
+ * VCC -> VCC
+ * GND -> GND
+ * OUT -> A1
+* */
+
 #include <SPI.h>
 #include <SdFat.h>
 #include <I2S.h>
@@ -25,6 +32,7 @@
 #include <Adafruit_BME280.h>
 
 #define SD_CS_PIN 4
+#define TEMT6000_PIN A1
 
 Adafruit_BME280 bme280;
 
@@ -103,7 +111,7 @@ void setup() {
 
   // Write CSV header
   if (file.open(filename, O_WRITE | O_CREAT)) {
-    file.println("Timestamp,Temperature (C),Humidity (%),Sound");
+    file.println("Timestamp,Temperature (C),Humidity (%),Sound,Light");
     file.close();
     Serial.println("Created file and wrote header");
   } else {
@@ -127,6 +135,9 @@ void setup() {
     Serial.println("Failed to init BME280");
     while (1);
   }
+
+  pinMode(TEMT6000_PIN, INPUT);
+  Serial.println("Initialized TEMT6000");
 }
 
 void loop() {
@@ -162,6 +173,7 @@ void loop() {
 
     float temp = bme280.readTemperature();
     float humidity = bme280.readHumidity();
+    float light = analogRead(TEMT6000_PIN);
 
     file.print(now);
     file.print(",");
@@ -169,7 +181,9 @@ void loop() {
     file.print(",");
     file.print(humidity);
     file.print(",");
-    file.println(sound_smoothed);
+    file.print(sound_smoothed);
+    file.print(",");
+    file.print(light);
     file.println();
 
     file.flush();
