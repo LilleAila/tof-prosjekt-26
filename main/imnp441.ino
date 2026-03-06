@@ -23,6 +23,10 @@ float sound_smoothed = 0;
 float envelope = 0;
 int hold = 0;
 
+float lastValue = -1;
+int freezeCounter = 0;
+const int freezeThreshold = 5000;
+
 void init_imnp441() {
   // Init I2S
   if (I2S.begin(I2S_PHILIPS_MODE, 16000, 32)) {
@@ -35,9 +39,10 @@ void init_imnp441() {
 }
 
 void sample_imnp441() {
-  int32_t sample = I2S.read();
-
-  if (sample != 0 && sample != -1) {
+  int maxSamples = 32;
+  while (I2S.available() && maxSamples--) {
+    int32_t sample = I2S.read();
+    if (sample == -1) return;
     sample >>= 8; // IMNP441 uses 24-bit I2S, arduino reads 32-bit
     float s = abs(sample);
     if (s > threshold) {
@@ -59,10 +64,25 @@ void sample_imnp441() {
 
     if (hold > 0) hold--;
   }
+
+  if (sound_smoothed == lastValue) {
+    freezeCounter++;
+  } else {
+    freezeCounter = 0;
+  }
+  lastValue = sound_smoothed;
+
+  if (freezeCounter > freezeThreshold) {
+    I2S.end();
+    delay(10);
+  }
 }
 
 
 
 float read_imnp441() {
   return sound_smoothed;
+  I2S.begin(I2S_PHILIPS_MODE, 16000, 32);
+  freezeCounter = 0;
+  lastValue = -1;
 }

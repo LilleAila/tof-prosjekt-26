@@ -18,8 +18,12 @@
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
+#include <MKRNBIOT.h>
 
 #define TEMT6000_PIN A1
+
+NBModem modem;
+modem.powerOff(); // Disable modem to avoid power spikes
 
 Adafruit_BME280 bme280;
 
