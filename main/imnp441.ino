@@ -65,7 +65,7 @@ void sample_imnp441() {
     if (hold > 0) hold--;
   }
 
-  if (sound_smoothed == lastValue) {
+  if (abs(sound_smoothed - lastValue) < 0.001) {
     freezeCounter++;
   } else {
     freezeCounter = 0;
@@ -74,7 +74,14 @@ void sample_imnp441() {
 
   if (freezeCounter > freezeThreshold) {
     I2S.end();
-    delay(10);
+    delay(150);
+    if (I2S.begin(I2S_PHILIPS_MODE, 16000, 32)) {
+      Serial.println("I2S restarted successfully");
+      freezeCounter = 0;
+      lastValue = -1;
+    } else {
+      Serial.println("I2S restart failed");
+    };
   }
 }
 
@@ -82,7 +89,4 @@ void sample_imnp441() {
 
 float read_imnp441() {
   return sound_smoothed;
-  I2S.begin(I2S_PHILIPS_MODE, 16000, 32);
-  freezeCounter = 0;
-  lastValue = -1;
 }
