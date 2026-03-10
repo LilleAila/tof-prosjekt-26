@@ -23,10 +23,6 @@ float sound_smoothed = 0;
 float envelope = 0;
 int hold = 0;
 
-float lastValue = -1;
-int freezeCounter = 0;
-const int freezeThreshold = 5000;
-
 void init_imnp441() {
   // Init I2S
   if (I2S.begin(I2S_PHILIPS_MODE, 16000, 32)) {
@@ -39,10 +35,11 @@ void init_imnp441() {
 }
 
 void sample_imnp441() {
-  int maxSamples = 32;
-  while (I2S.available() && maxSamples--) {
-    int32_t sample = I2S.read();
-    if (sample == -1) return;
+  if !(I2S.available()) return;
+
+  int32_t sample = I2S.read();
+
+  if (sample != 0 && sample != -1) {
     sample >>= 8; // IMNP441 uses 24-bit I2S, arduino reads 32-bit
     float s = abs(sample);
     if (s > threshold) {
@@ -63,25 +60,6 @@ void sample_imnp441() {
     sound_smoothed = alpha * envelope + (1 - alpha) * sound_smoothed;
 
     if (hold > 0) hold--;
-  }
-
-  if (abs(sound_smoothed - lastValue) < 0.001) {
-    freezeCounter++;
-  } else {
-    freezeCounter = 0;
-  }
-  lastValue = sound_smoothed;
-
-  if (freezeCounter > freezeThreshold) {
-    I2S.end();
-    delay(150);
-    if (I2S.begin(I2S_PHILIPS_MODE, 16000, 32)) {
-      Serial.println("I2S restarted successfully");
-      freezeCounter = 0;
-      lastValue = -1;
-    } else {
-      Serial.println("I2S restart failed");
-    };
   }
 }
 
