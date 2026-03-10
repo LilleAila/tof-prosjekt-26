@@ -20,10 +20,12 @@ int getFileNumber() {
   }
 }
 
+// NOTE: this part of the code has not been tested yet!
+// We need to add a physical button to call this function, otherwise it never gets called
 void incrementFile() {
-  num++;
+  fileNumber++;
   if (counterFile.open("counter.txt", O_WRITE | O_TRUNC | O_CREAT)) {
-    counterFile.println(num);
+    counterFile.println(fileNumber);
     counterFile.close();
   }
   NVIC_SystemReset();
