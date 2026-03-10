@@ -8,28 +8,28 @@ File counterFile;
 
 char filename[20];
 
-int nextFileNumber() {
-  int num = 0;
+int fileNumber = 0;
 
+int getFileNumber() {
   if (sd.exists("counter.txt")) {
     if (counterFile.open("counter.txt", O_READ)) {
       counterFile.fgets(filename, sizeof(filename));
-      num = atoi(filename);
+      fileNumber = atoi(filename);
       counterFile.close();
     }
   }
+}
 
+void incrementFile() {
   num++;
-
   if (counterFile.open("counter.txt", O_WRITE | O_TRUNC | O_CREAT)) {
     counterFile.println(num);
     counterFile.close();
   }
-
-  return num;
+  NVIC_SystemReset();
 }
 
-void init_sd() {
+File init_sd() {
   // Init SD card
   Serial.print("Initializing SD... ");
   if (sd.begin(SD_CS_PIN, SD_SCK_MHZ(12))) {
@@ -41,18 +41,21 @@ void init_sd() {
   }
 
   // Create file
-  sprintf(filename, "data_%03d.csv", nextFileNumber());
+  getFileNumber();
+  sprintf(filename, "data_%03d.csv", fileNumber);
   Serial.print("Creating file: ");
   Serial.println(filename);
 
   // Write CSV header
-  if (file.open(filename, O_WRITE | O_CREAT)) {
-    file.println("Timestamp,Temperature (C),Humidity (%),Sound,Light");
-    file.close();
-    Serial.println("Created file and wrote header");
-  } else {
-    Serial.println("Failed to create file");
-    while (1);
+  if (!sd.exists(filename)) {
+    if (file.open(filename, O_WRITE | O_CREAT)) {
+      file.println("Timestamp,Temperature (C),Humidity (%),Sound,Light");
+      file.close();
+      Serial.println("Created file and wrote header");
+    } else {
+      Serial.println("Failed to create file");
+      while (1);
+    }
   }
 
   // Open file

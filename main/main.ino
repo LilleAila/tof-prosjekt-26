@@ -35,6 +35,7 @@ void setup() {
   Serial.begin(115200);
   unsigned long start = millis();
   while (!Serial && millis() - start < 3000);
+  Serial.println("---------- BOOT ----------");
 
   init_sd();
   init_imnp441();
@@ -61,6 +62,8 @@ void loop() {
     float humidity = bme280.readHumidity();
     float light = analogRead(TEMT6000_PIN);
     float sound = read_imnp441();
+
+    Serial.println(sound);
 
     file.print(now);
     file.print(",");
