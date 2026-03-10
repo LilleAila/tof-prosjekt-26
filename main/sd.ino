@@ -5,12 +5,14 @@
 SdFat sd;
 File file;
 File counterFile;
+File timestampFile;
 
 char filename[20];
 
 int fileNumber = 0;
+unsigned long startupTime = 0;
 
-int getFileNumber() {
+void getFileNumber() {
   if (sd.exists("counter.txt")) {
     if (counterFile.open("counter.txt", O_READ)) {
       counterFile.fgets(filename, sizeof(filename));
@@ -28,10 +30,34 @@ void incrementFile() {
     counterFile.println(fileNumber);
     counterFile.close();
   }
+  reset_now();
   NVIC_SystemReset();
 }
 
-File init_sd() {
+void update_now() {
+  unsigned long now = millis();
+  if (timestampFile.open("timestamp.txt", O_WRITE | O_TRUNC | O_CREAT)) {
+    timestampFile.println(now + startupTime);
+    timestampFile.close();
+  }
+}
+
+void reset_now() {
+  sd.remove("timestamp.txt");
+}
+
+void get_now() {
+  char startup[20];
+  if (sd.exists("timestamp.txt")) {
+    if (timestampFile.open("timestamp.txt", O_READ)) {
+      timestampFile.fgets(startup, sizeof(startup));
+      startupTime = strtoul(startup, NULL, 10);
+      timestampFile.close();
+    }
+  }
+}
+
+void init_sd() {
   // Init SD card
   Serial.print("Initializing SD... ");
   if (sd.begin(SD_CS_PIN, SD_SCK_MHZ(12))) {
@@ -47,6 +73,8 @@ File init_sd() {
   sprintf(filename, "data_%03d.csv", fileNumber);
   Serial.print("Creating file: ");
   Serial.println(filename);
+
+  get_now();
 
   // Write CSV header
   if (!sd.exists(filename)) {

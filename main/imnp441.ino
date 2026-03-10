@@ -86,6 +86,7 @@ void sample_imnp441() {
         stalls++;
         if (stalls > 10) {
           Serial.println("Stalled! Resetting MCU");
+          update_now();
           NVIC_SystemReset();
           stalls = 0;
         }
