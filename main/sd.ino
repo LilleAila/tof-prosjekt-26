@@ -3,15 +3,16 @@
 #define SD_CS_PIN 4
 
 SdFat sd;
-File file;
-File counterFile;
-File timestampFile;
+File file; // Data file
+File counterFile; // Counter file
+File timestampFile; // Timestamp file
 
 char filename[20];
 
 int fileNumber = 0;
 unsigned long startupTime = 0;
 
+// Get the file number stored in the counter file. This is used to determine which data file to use.
 void getFileNumber() {
   if (sd.exists("counter.txt")) {
     if (counterFile.open("counter.txt", O_READ)) {
@@ -22,19 +23,20 @@ void getFileNumber() {
   }
 }
 
-// NOTE: this part of the code has not been tested yet!
-// We need to add a physical button to call this function, otherwise it never gets called
+// Increment the file number to begin measurements in a new file.
 void incrementFile() {
   fileNumber++;
   if (counterFile.open("counter.txt", O_WRITE | O_TRUNC | O_CREAT)) {
     counterFile.println(fileNumber);
     counterFile.close();
   }
-  reset_now();
+  // Instead of implementing restart behavior, we take advantage of the existing code by just restarting the arduino.
+  resetNow();
   NVIC_SystemReset();
 }
 
-void update_now() {
+// Update the timestamp stored int eh timestamp file so that it will resume from the correct state after a restart
+void updateNow() {
   unsigned long now = millis();
   if (timestampFile.open("timestamp.txt", O_WRITE | O_TRUNC | O_CREAT)) {
     timestampFile.println(now + startupTime);
@@ -42,11 +44,13 @@ void update_now() {
   }
 }
 
-void reset_now() {
+// Reset the timestamp so that the next measurement starts from 0.
+void resetNow() {
   sd.remove("timestamp.txt");
 }
 
-void get_now() {
+// Retrieve the stored timestamp to resume.
+void getNow() {
   char startup[20];
   if (sd.exists("timestamp.txt")) {
     if (timestampFile.open("timestamp.txt", O_READ)) {
@@ -57,7 +61,7 @@ void get_now() {
   }
 }
 
-void init_sd() {
+void initSd() {
   // Init SD card
   Serial.print("Initializing SD... ");
   if (sd.begin(SD_CS_PIN, SD_SCK_MHZ(12))) {
@@ -68,13 +72,14 @@ void init_sd() {
     while (1);
   }
 
-  // Create file
+  // Create data file
   getFileNumber();
   sprintf(filename, "data_%03d.csv", fileNumber);
   Serial.print("Creating file: ");
   Serial.println(filename);
 
-  get_now();
+  // Set the timestamp to start from if it exists
+  getNow();
 
   // Write CSV header
   if (!sd.exists(filename)) {
@@ -88,7 +93,7 @@ void init_sd() {
     }
   }
 
-  // Open file
+  // Open file for further writing.
   if (file.open(filename, O_WRITE | O_APPEND)) {
     Serial.print("Opened file ");
     Serial.println(filename);
