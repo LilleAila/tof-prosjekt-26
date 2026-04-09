@@ -89,16 +89,19 @@ Lagres til en CSV-fil for behandling
 
 == Komponenter
 
-
 #slide(composer: (1fr, auto))[
+  Komponenter per arduino:
+
   - Arduino MKR NB 1500
   - Sd-kort (formatert til FAT32)
   - MKR MEM Shield
   - TEMT6000 lyssensor
   - BME280 temperatursensor
   - IMNP441 mikrofon
-  - 5V mobillader
-  - Micro-usb kabel
+
+  - 5V mobillader + kabel
+  - Koblingsbrett
+  - Diverse kabler
 ][
   #figure(
     image("Assets/arduino.png", width: 20em),
