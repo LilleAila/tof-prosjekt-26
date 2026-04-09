@@ -21,5 +21,9 @@ with import <nixpkgs> {};
           ipywidgets
           ipython
         ]))
+
+      typst
+      tinymist
+      typstyle
     ];
   }
