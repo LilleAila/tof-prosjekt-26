@@ -53,6 +53,8 @@
   h(1pt)
 }
 
+#let analysis = json("data/analysis.ipynb")
+
 #title-slide()
 
 = Innhold <touying:hidden>
@@ -70,8 +72,8 @@ Undersøke korrelasjonen mellom støy og konsentrasjon i klasserommet.
 
 Andre underhypoteser
 
-- Høyere temperatur i klasserommet vil føre til høyere støynivå
-- Lavere lysnivå vil medføre mindre støy og bedre konsentrasjon
+- Høyere temperatur i klasserommet vil føre til lavere konsentrasjon
+- Et mørkere klasserom vil ha høyere selvrapportert konsentrasjon
 
 = Metode
 
@@ -311,7 +313,10 @@ concatenate datasets
 = Resultater
 
 #slide(align: center + horizon)[
-  Samlet inn fra 12 individuelle timer, med om lag 100 svar totalt på undersøkelsen, fokusert på tre fag:
+  Samlet inn fra 12 individuelle timer, med totalt #callisto.result(
+    "survey_count",
+    nb: analysis,
+  ) svar på undersøkelsen, fokusert på tre fag:
 
   #table(
     columns: 2,
@@ -332,12 +337,12 @@ concatenate datasets
   #alternatives[
     #callisto.display(
       "tysk-corr",
-      nb: json("data/analysis.ipynb"),
+      nb: analysis,
     )
   ][
     #callisto.display(
       "tysk-corr2",
-      nb: json("data/analysis.ipynb"),
+      nb: analysis,
     )
   ]
 ][
@@ -361,24 +366,33 @@ concatenate datasets
   *Tysk*
   #callisto.display(
     "tysk-corr",
-    nb: json("data/analysis.ipynb"),
+    nb: analysis,
   )
-  - Muntlig fag
+  #uncover("2-")[
+    - Muntlig fag
+    - Mye snakking
+  ]
 ][
   *IT1*
   #callisto.display(
     "it1-corr",
-    nb: json("data/analysis.ipynb"),
+    nb: analysis,
   )
-  - Teoretisk fag
-  - Individuelt arbeid
+  #uncover("2-")[
+    - Teoretisk fag
+    - Individuelt arbeid
+    - Også samarbeid
+  ]
 ][
   *ToF*
   #callisto.display(
     "tof-corr",
-    nb: json("data/analysis.ipynb"),
+    nb: analysis,
   )
-  - Praktisk fag
+  #uncover("2-")[
+    - Praktisk fag
+    - Mye samarbeid
+  ]
 ]
 
 == Refleksjon
