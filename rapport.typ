@@ -2,6 +2,7 @@
 #import "@preview/numbly:0.1.0": numbly
 #import "@preview/touying:0.5.3": *
 #import themes.metropolis: *
+#import "@preview/callisto:0.2.5"
 
 #show: metropolis-theme.with(
   aspect-ratio: "16-9",
@@ -325,11 +326,69 @@ concatenate datasets
   I tillegg til samtlige ubrukte testmålinger, blant annet over natten og uten tilknyttet spørreundersøkelse. Totalt 215 timer med målinger.
 ]
 
+== Korrelasjoner
+
+#slide(composer: (auto, 1fr), align: top)[
+  #alternatives[
+    #callisto.display(
+      "tysk-corr",
+      nb: json("data/analysis.ipynb"),
+    )
+  ][
+    #callisto.display(
+      "tysk-corr2",
+      nb: json("data/analysis.ipynb"),
+    )
+  ]
+][
+  === Tysk
+
+  ```py
+  corr = df[df["Subject"] == "tysk"].corr(numeric_only=True)
+  ax = sns.heatmap(corr)
+  ```
+
+  #pause
+
+  Mer støy $arrow$ bedre konsentrasjon, men mindre arbeid.
+
+  Kanskje "arbeid" er en bedre variabel?
+
+  Temperatur har _sterk_ korrelasjon. Samme gjelder lys.
+]
+
+#slide(composer: (1fr, 1fr, 1fr), align: left)[
+  *Tysk*
+  #callisto.display(
+    "tysk-corr",
+    nb: json("data/analysis.ipynb"),
+  )
+  - Muntlig fag
+][
+  *IT1*
+  #callisto.display(
+    "it1-corr",
+    nb: json("data/analysis.ipynb"),
+  )
+  - Teoretisk fag
+  - Individuelt arbeid
+][
+  *ToF*
+  #callisto.display(
+    "tof-corr",
+    nb: json("data/analysis.ipynb"),
+  )
+  - Praktisk fag
+]
+
 == Refleksjon
+
+=== Forbedringer
 
 - Kontrollgruppe?
 - Redusere feilkilder
 - Spørreundersøkelsen
   - Motivasjon?
+  - Kalibrering og kontroll
 
 == Konklusjon
