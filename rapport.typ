@@ -7,7 +7,7 @@
   aspect-ratio: "16-9",
   align: horizon,
   config-info(
-    title: [Tof-prosjekt våren 2026],
+    title: [Tof-prosjekt våren 2026 - Rapport],
     subtitle: [Støy og konsentrasjon],
     author: [Olai og Håvard],
     date: [2026-04-09],
@@ -58,13 +58,10 @@
 
 #outline(title: none, indent: 1em, depth: 2)
 
-= Rapport
-
-== Introduksjon
-
-Undersøke korrelasjonen mellom støy og konsentrasjon i klasserommet.
+= Introduksjon
 
 == Hypotese
+Undersøke korrelasjonen mellom støy og konsentrasjon i klasserommet.
 
 #colorbox(title: "Hypotese", color: "blue")[
   Økt støynivå i klasserommet fører til lavere selvrapportert konsentrasjon
@@ -75,7 +72,7 @@ Andre underhypoteser
 - Høyere temperatur i klasserommet vil føre til høyere støynivå
 - Lavere lysnivå vil medføre mindre støy og bedre konsentrasjon
 
-== Metode
+= Metode
 
 == Kravspesifikasjoner
 
@@ -245,7 +242,7 @@ Lagres til en CSV-fil for behandling
 ]
 
 #slide(composer: (1fr, auto))[
-  Så tidligere at lys er mest likt mellom dem. Forskyver derfor basert på det.
+  Så tidligere at lys er mest likt mellom arduinoer. Forskyver derfor basert på det.
 
   ```py
   from scipy import signal
@@ -288,7 +285,7 @@ Inneholder følgende spørsmål:
 - Hvor konsentrert var du i timen?
 - Hvor mye arbeid gjorde du?
 
-Undersøkelsen besvares etter hver målte skoletime. Vi har så langt samlet inn omtrent 100 besvarelser.
+Undersøkelsen besvares etter hver målte skoletime.
 
 == Analyse
 
@@ -310,8 +307,29 @@ for d in datasets:
 concatenate datasets
 ```
 
-== Resultater
+= Resultater
+
+#slide(align: center + horizon)[
+  Samlet inn fra 12 individuelle timer, med om lag 100 svar totalt på undersøkelsen, fokusert på tre fag:
+
+  #table(
+    columns: 2,
+    align: center,
+    inset: 10pt,
+    [*Fag*], [*Antall Målinger*],
+    [IT1], [3],
+    [ToF], [4],
+    [Tysk], [5],
+  )
+
+  I tillegg til samtlige ubrukte testmålinger, blant annet over natten og uten tilknyttet spørreundersøkelse. Totalt 215 timer med målinger.
+]
 
 == Refleksjon
+
+- Kontrollgruppe?
+- Redusere feilkilder
+- Spørreundersøkelsen
+  - Motivasjon?
 
 == Konklusjon
