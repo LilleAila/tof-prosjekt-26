@@ -377,14 +377,16 @@ concatenate datasets
   ) svar på undersøkelsen, fokusert på tre fag:
 
   #table(
-    columns: 2,
+    columns: 3,
     align: center,
     inset: 10pt,
-    [*Fag*], [*Antall Målinger*],
-    [IT1], [3],
-    [ToF], [4],
-    [Tysk], [5],
+    [*Fag*], [*Antall Målinger*], [*Antall Svar*],
+    [IT1], [3], [29],
+    [ToF], [4], [29],
+    [Tysk], [5], [35],
   )
+
+
 
   I tillegg til samtlige ubrukte testmålinger, blant annet over natten og uten tilknyttet spørreundersøkelse. Totalt 215 timer med målinger.
 ]
