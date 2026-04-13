@@ -64,6 +64,9 @@
 = Introduksjon
 
 == Hypotese
+
+=== Hensikt
+
 Undersøke korrelasjonen mellom støy og konsentrasjon i klasserommet.
 
 #colorbox(title: "Hypotese", color: "blue")[
@@ -281,6 +284,61 @@ Lagres til en CSV-fil for behandling
   Dette kan da brukes videre med de reelle datasettene.
 ]
 
+== Nullstilling av IMNP441
+
+#slide(composer: (1fr, auto))[
+  Mikrofonen slutter å måle etter litt tid. Bruker derfor:
+
+  ```py
+  if (millis() - lastCheck > 1000) {
+    if (abs(soundSmoothed - lastSoundSmoothed) < 1) {
+      stalls++;
+      if (stalls > 10) {
+        Serial.println("Stalled! Resetting MCU");
+        updateNow();
+        NVIC_SystemReset();
+        stalls = 0;
+      }
+    } else {
+      stalls = 0;
+    }
+    lastCheck = millis();
+    lastSoundSmoothed = soundSmoothed;
+  }
+  ```
+][
+  #figure(
+    image("Assets/mic-reset.png"),
+    caption: [Reset av IMNP441],
+  )
+
+  Dette medfører en del andre problemer.
+]
+
+== Uthenting av data
+
+#slide(composer: (auto, 1fr))[
+  #figure(
+    image("Assets/timestamp-reset.png"),
+    caption: [Reset av timestamp],
+  )
+][
+  ```py
+  df = pd.read_csv("a2-data0.csv")
+  ts = df["Timestamp"]
+  ts.plot()
+  ts.index[ts < ts.shift(1)] + 2
+  ```
+
+  ```
+  Index([2315], dtype='int64')
+  ```
+
+  Bug i koden: Noen ganger startet ikke en ny datafil.
+
+  Kan da bruke timestamp.
+]
+
 == Spørreundersøkelse
 
 Inneholder følgende spørsmål:
@@ -359,7 +417,7 @@ concatenate datasets
 
   Kanskje "arbeid" er en bedre variabel?
 
-  Temperatur har _sterk_ korrelasjon. Samme gjelder lys.
+  Lys har _negativ_ korrelasjon. Samme gjelder temperatur.
 ]
 
 #slide(composer: (1fr, 1fr, 1fr), align: left)[
