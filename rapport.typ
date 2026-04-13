@@ -464,3 +464,5 @@ concatenate datasets
   - Kalibrering og kontroll
 
 == Konklusjon
+
+Noen teoretiske og noen mer individuelle fag. I ToF var snakking positivt, men negativt i tysk.
