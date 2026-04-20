@@ -411,8 +411,9 @@ Lagres til en CSV-fil for behandling
 
 Inneholder følgende spørsmål:
 
-- Hvor konsentrert var du i timen?
-- Hvor mye arbeid gjorde du?
+- Hvor konsentrert var du i løpet av timen? \
+  (ikke nødvendigvis på skolearbeidet)
+- Hvor mye skolearbeid fikk du gjort i løpet av timen?
 
 Undersøkelsen besvares etter hver målte skoletime.
 
