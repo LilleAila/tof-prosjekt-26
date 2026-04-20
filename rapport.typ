@@ -224,6 +224,31 @@ Lagres til en CSV-fil for behandling
   )
 ]
 
+#slide(align: center + horizon)[
+  === Standardfeil
+
+  $
+    s & = sqrt(1 / (n - 1) [(y_1 - overline(y))^2 + (y_2 - overline(y))^2 + dots + (y_n - overline(y))^2]) \
+    S E & = s / sqrt(n)
+  $
+
+  #box(width: 75%)[
+    #align(left)[
+      ```py
+      >>> night[0].mean(), night[0].sem()
+      (np.float64(5285.969956755665), np.float64(1.990551890968409))
+      ```
+    ]
+  ]
+
+  $
+                  overline(y) = 5.29 dot 10^3 & , S E = 1.99 \
+    "Relative error" = (1.99)/(5.29 dot 10^3) & = 0.00037 = 0.037%
+  $
+
+  Dette er en veldig bra verdi som tyder på at sensoren er pålitelig.
+]
+
 #slide(composer: (1fr, auto))[
   ```py
   >>> abs(night[1].mean() - night[0].mean())
