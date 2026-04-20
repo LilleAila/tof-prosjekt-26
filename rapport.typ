@@ -364,6 +364,49 @@ Lagres til en CSV-fil for behandling
   Kan da bruke timestamp.
 ]
 
+#slide(composer: (1fr, 1fr))[
+  Filstruktur på datasett:
+
+  ```
+  data/
+  ├── 20260319T0823-tof
+  │   ├── a1-data.csv
+  │   ├── a2-data.csv
+  │   ├── meta.yaml
+  │   └── survey.csv
+  ├── 20260320T1036-tysk
+  │   ├── a1-data.csv
+  │   ├── a2-data.csv
+  │   ├── meta.yaml
+  │   └── survey.csv
+  └── 20260323T1344-tof
+      ├── a1-data.csv
+      ├── a2-data.csv
+      ├── meta.yaml
+      └── survey.csv
+  ...
+  ```
+][
+  Ekstrainformasjon
+  ```yaml
+  #meta.yaml
+  Datetime: ISO8601 string
+  Arduinos: number of arduinos
+  Room: room ID
+  Subject: subject name
+  ```
+
+  Eksempel:
+
+  ```yaml
+  # meta.yaml
+  Datetime: "20260319T0823"
+  Arduinos: 2
+  Room: "619"
+  Subject: "tof"
+  ```
+]
+
 == Spørreundersøkelse
 
 Inneholder følgende spørsmål:

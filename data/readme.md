@@ -6,6 +6,7 @@
 Each dataset contains one `.csv`-file with the survey responses, in addition to one `.csv`-file for each arduino used. There is also a metadata-file (`meta.yaml`) containing the following keys:
 
 ```yaml
+Datetime: ISO8601 string
 Arduinos: number of arduinos
 Room: room ID
 Subject: subject name
